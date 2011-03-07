@@ -5,6 +5,13 @@ mkdir $tmp
 cd $tmp
 git clone $1
 cd "$(ls)"
-sudo python setup.py install
+
+if [ -f setup.py ]
+then
+  sudo python setup.py install
+else
+  echo "ERROR: Unknown package format. Installation aborted."
+fi
+
 cd $pwd
 sudo rm -r $tmp
