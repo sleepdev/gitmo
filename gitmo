@@ -1,17 +1,20 @@
 #!/bin/sh
-pwd="$(pwd)"
-tmp="tmp $(date)"
-mkdir $tmp
-cd $tmp
-git clone $1
-cd "$(ls)"
+for rsrc in $@
+do 
+  pwd="$(pwd)"
+  tmp="tmp $(date)"
+  mkdir $tmp
+  cd $tmp
+  git clone $rsrc > /dev/null 2>&1
+  cd "$(ls)"
 
-if [ -f setup.py ]
-then
-  sudo python setup.py install
-else
-  echo "ERROR: Unknown package format. Installation aborted."
-fi
+  if [ -f setup.py ]
+  then
+    sudo python setup.py install > /dev/null
+  else
+    echo "ERROR: Unknown package format. $rsrc"
+  fi
 
-cd $pwd
-sudo rm -r $tmp
+  cd $pwd
+  sudo rm -r $tmp
+done
