@@ -1,0 +1,10 @@
+#!/bin/sh
+pwd="$(pwd)"
+tmp="tmp $(date)"
+mkdir $tmp
+cd $tmp
+git clone $1
+cd "$(ls)"
+sudo python setup.py install
+cd $pwd
+sudo rm -r $tmp
