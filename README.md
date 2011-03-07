@@ -1,4 +1,6 @@
-gitmo - a git based package manager
+gitmo
+=====
+a git based package manager
 
     gitmo https://github.com/facebook/tornado.git
 
