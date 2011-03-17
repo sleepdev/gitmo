@@ -1,13 +1,25 @@
 #!/bin/sh
+
 for rsrc in $@
 do 
   pwd="$(pwd)"
   tmp="tmp $(date)"
   mkdir $tmp
   cd $tmp
-  git clone $rsrc > /dev/null 2>&1
-  cd "$(ls)"
 
+  if [ $rsrc~="*.git" 
+  then
+    git clone $rsrc > /dev/null 2>&1
+  elif [ $rsrc~="*.tar.gz" ]
+  then
+    wget $rsrc
+    tar -xf *.tar.gz
+    rm *.tar.gz
+  else
+    echo "ERROR: Unknown resource format. $rsrc"
+  fi
+  
+  cd "$(ls)"
   if [ -f setup.py ]
   then
     sudo python setup.py install > /dev/null
@@ -17,4 +29,5 @@ do
 
   cd $pwd
   sudo rm -r $tmp
+
 done
