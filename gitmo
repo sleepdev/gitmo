@@ -1,33 +1,42 @@
-#!/bin/sh
+#!/bin/bash
+
+
+#extract and install resource file if exists
+try_install () {
+  if [ -d * ];then
+    cd *
+    sudo python setup.py install
+  else
+    echo "ERROR: Unknown package format. `ls`"    
+  fi
+}
+
+
+
+
 
 for rsrc in $@
 do 
+  #make temporary directory
   pwd="$(pwd)"
   tmp="tmp $(date)"
   mkdir $tmp
   cd $tmp
 
-  if [ $rsrc~="*.git" 
-  then
+  #download remote resource file
+  if [[ $rsrc =~ \.git$ ]]; then
     git clone $rsrc > /dev/null 2>&1
-  elif [ $rsrc~="*.tar.gz" ]
-  then
+    try_install
+  elif [[ $rsrc =~ \.tar\.gz$ ]]; then
     wget $rsrc
     tar -xf *.tar.gz
     rm *.tar.gz
+    try_install
   else
     echo "ERROR: Unknown resource format. $rsrc"
   fi
-  
-  cd "$(ls)"
-  if [ -f setup.py ]
-  then
-    sudo python setup.py install > /dev/null
-  else
-    echo "ERROR: Unknown package format. $rsrc"
-  fi
 
+  #cleanup
   cd $pwd
   sudo rm -r $tmp
-
 done
