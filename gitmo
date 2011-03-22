@@ -15,28 +15,27 @@ try_install () {
 
 
 
-for rsrc in $@
-do 
-  #make temporary directory
-  pwd="$(pwd)"
-  tmp="tmp $(date)"
-  mkdir $tmp
-  cd $tmp
+#make temporary directory
+pwd="$(pwd)"
+tmp="tmp $(date)"
+mkdir $tmp
+cd $tmp
 
-  #download remote resource file
-  if [[ $rsrc =~ \.git$ ]]; then
-    git clone $rsrc > /dev/null 2>&1
-    try_install
-  elif [[ $rsrc =~ \.tar\.gz$ ]]; then
-    wget $rsrc
-    tar -xf *.tar.gz
-    rm *.tar.gz
-    try_install
-  else
-    echo "ERROR: Unknown resource format. $rsrc"
-  fi
 
-  #cleanup
-  cd $pwd
-  sudo rm -r $tmp
-done
+#download remote resource file
+if [[ $@ =~ \.git$ ]]; then
+  git clone $@ > /dev/null 2>&1
+  try_install
+elif [[ $@ =~ \.tar\.gz$ ]]; then
+  wget $@
+  tar -xf *.tar.gz
+  rm *.tar.gz
+  try_install
+else
+  echo "ERROR: Unknown resource format. $rsrc"
+fi
+
+#cleanup
+cd $pwd
+sudo rm -r $tmp
+
